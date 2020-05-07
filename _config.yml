@@ -18,35 +18,26 @@
 # You can create any custom variable you would like, and they will be accessible
 # in the templates via {{ site.myvariable }}.
 
+# theme
+remote_theme: "mmistakes/so-simple-theme@3.2.0"
+
+locale: en-GB
 title: Best tea in London, perhaps
 # email: -email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   A blog on statistics and machine learning. 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
+url: "https://gblog-ml.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 # github_username:  jekyll
-
-
-remote_theme: "mmistakes/so-simple-theme@3.2.0"
-# Build settings
-plugins:
-  - jekyll-feed
-  - jekyll-paginate
-
-# locale setting: 
-locale: en-GB
-
-# Site skin
 skin: "/assets/css/skins/dark.css"
-
 # Mathjax settings
-markdown: kramdown
 mathjax:
   enable: true
-  combo: "tex-svg"
-  tags: "ams"
-
+ # combo: "tex-svg"
+ # tags: "ams"
+# Build settings
+markdown: kramdown
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
