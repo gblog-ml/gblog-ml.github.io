@@ -1,0 +1,8 @@
+noukoudashisoup: 
+  name: Heishiro Kanagawa
+  picture: /images/noukoudashisoup_prof.jpeg
+  twitter: "@noukoudashisoup"
+  links:
+      - title: Twitter
+        url: https://twitter.com/noukoudashisoup
+        icon: fab fa-twitter-square
