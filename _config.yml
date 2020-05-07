@@ -21,9 +21,9 @@
 title: Best tea in London, perhaps
 # email: -email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
-A blog on statistics and machine learning. 
+  A blog on statistics and machine learning. 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://gblog-ml.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+url: "" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 # github_username:  jekyll
 
@@ -32,6 +32,7 @@ remote_theme: "mmistakes/so-simple-theme@3.2.0"
 # Build settings
 plugins:
   - jekyll-feed
+  - jekyll-paginate
 
 # locale setting: 
 locale: en-GB
@@ -65,3 +66,7 @@ mathjax:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+
+# Pagination
+paginate: 10  # amount of posts to show per page
+paginate_path: /page:num/
