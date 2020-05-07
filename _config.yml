@@ -32,10 +32,7 @@ url: "https://gblog-ml.github.io" # the base hostname & protocol for your site, 
 # github_username:  jekyll
 skin: "/assets/css/skins/dark.css"
 # Mathjax settings
-mathjax:
-  enable: true
- # combo: "tex-svg"
- # tags: "ams"
+mathjax: true
 # Build settings
 markdown: kramdown
 # Exclude from processing.
@@ -57,7 +54,10 @@ markdown: kramdown
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
-
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-remote
 # Pagination
 paginate: 10  # amount of posts to show per page
 paginate_path: /page:num/
