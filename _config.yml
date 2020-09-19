@@ -22,7 +22,7 @@
 remote_theme: "mmistakes/so-simple-theme@3.2.0"
 
 locale: en-GB
-title: Best tea in London, perhaps
+title: Best tea in London
 # email: -email@example.com
 description: >- # this means to ignore newlines until "baseurl:"
   A blog on statistics and machine learning. 
@@ -58,6 +58,7 @@ plugins:
   - jekyll-feed
   - jekyll-paginate
   - jekyll-remote
+  - jekyll-archives
 # Pagination
 paginate: 10  # amount of posts to show per page
 paginate_path: /page:num/
