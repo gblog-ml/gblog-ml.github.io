@@ -62,3 +62,7 @@ plugins:
 # Pagination
 paginate: 10  # amount of posts to show per page
 paginate_path: /page:num/
+footer_links:
+  - title: Feed
+  - url: atom.xml
+  - icon: fas fa-rss-square
