@@ -235,6 +235,7 @@ $$
 for some neural network $$\mathrm{NN}$$ that does not necessarily have a sparse (or low-rank) structure.
 For this task, I observed that (somewhat obviously) the mixture model has a better performance in terms of KSD
 than the product one (see the plot below).
+You might want to take a look at the ipynb for this experiment [here](<https://github.com/noukoudashisoup/score-EM/blob/master/ipynb/categorical_vs_mixture.ipynb>).
 
 ![plot of test loss against iteration steps](/images/2021-02-27/testloss.png){: .align-center}
 
@@ -250,7 +251,7 @@ the approximating distribution is defined by measure transport.
 In the discrete case, defining a push-forward of some continuous distribution to a discrete distribution is not so trivial, and therefore we considered a mixture model where the density (pmf) is explicitly given.
 The idea in this post has been mentioned in [Ranganath et al., 2016][Ranganath2016] (we gave a concrete implementation).
 
-Variational inference with a mixture model like in (\ref{mixture}) is known as semi-implicit variational inference (see, e.g., [YinZhou2018]). I am sure that there have been significant developments in this area.
+Variational inference with a mixture model like in (\ref{mixture}) is known as semi-implicit variational inference (see, e.g., [Yin and Zhou, 2018][YinZhou2018]). I am sure that there have been significant developments in this area.
 A relative benefit of using KSD is that you do not need to derive a lower bound on KL.
 
 [Yang2018]: http://proceedings.mlr.press/v80/yang18c.html
@@ -258,4 +259,4 @@ A relative benefit of using KSD is that you do not need to derive a lower bound 
 [Maddison2016]: https://arxiv.org/abs/1611.00712 
 [Fisher2020]: https://arxiv.org/abs/2010.11779
 [Ranganath2016]: https://arxiv.org/abs/1610.09033]
-[YinZhou2018]: [http://proceedings.mlr.press/v80/yin18b/yin18b.pdf
+[YinZhou2018]: https://arxiv.org/abs/1805.11183
