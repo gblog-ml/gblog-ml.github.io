@@ -27,10 +27,15 @@ where there are $$D$$ lattice sites taking binary states ($$L=2$$).
 How do we approach this?
 Let us first consider the simple case $$D=1$$.
 In this case, we can sample from the distribution using the inverse trick.
-Explain the trick.
+The crux is that a probability distribution defines a partition of the unit interval.
+If we draw a sample from the uniform distribution on the interval $$U[0, 1]$$,
+then the probability of falling in a room, say Room 1, is the length of the room, which is $$p(1)$$.
 
-As we can evaluate $$p$$ for any point $$x$$ in $$\mathcal{X}$$, We might want to extend this trick to higher dimensions.
-However, this approach is no longer tractable in high dimension:
+![Inverse trick in 1d](/images/2021-02-27/inversetrick.jpg){: .align-center}
+
+This approach in theory can be extended to $$D>1$$ by noting that 
+a probability distribution defines a partition of the unit cube;
+however practically, this is no longer tractable in high dimension:
 
 1. Computing the partition of the unit cube is expensive in time (note that the cardinality of $$\mathcal{X}$$ is $$L^D$$), and
 2. Even if we get the partition, we cannot (at least naively) store it in memory.
@@ -45,7 +50,9 @@ Anyway let's first consider a simple approach.
 A first candidate is coordinate-wise independent distributions, that is, in the form of
 
 $$
-q(x^1, \dots, x^D) = \prod_{d=1}^Dq^{(d)}(x^d),
+\begin{equation}
+q(x^1, \dots, x^D) = \prod_{d=1}^Dq^{(d)}(x^d), \tag{product}\label{product}
+\end{equation}
 $$
 
 where $$q^{(d)}:\{0,\dots, L-1\} \to [0,1]$$, $$d=1,\dots,D$$.
@@ -89,7 +96,10 @@ $$
 In general, we can consider the following form of mixture models:
 
 $$
+\begin{equation}
 q_{\mathrm{mix}} = \int  (q^{(1)} \otimes \cdots \otimes q^{(D)}) \mathrm{d}Q(q^{(1)}, \dots, q^{(D)}),
+\tag{mixture}\label{mixture}
+\end{equation}
 $$
 
 where $$Q$$ is a joint distribution of probability vectors $$q^{(1)},\dots, q^{(D)}$$ (so the above expression 
@@ -150,7 +160,7 @@ It is required that the discrepancy can be estimated using (a) evaluation of $$p
 Note that the pmf of the approximant $$q_{\mathrm{mix}}$$ is not given in closed form due to the complicated mixing distribution $$Q_{\theta}$$, which is why we can only assume access to generated samples.
 As a consequence, common discrepancy measures such as KL-divergence are ruled out.
 
-As the heading suggests, we use the kernel Stein discrepancy (KSD) [Yang et al., 2018][Yang2018].
+As the heading suggests, we use the kernel Stein discrepancy (KSD) ([Yang et al., 2018][Yang2018]).
 KSD is defined by two ingredients: a score function and a kernel.
 The score function of a pmf $$p$$ is defined as follows:
 
@@ -170,16 +180,19 @@ A kernel function $$k:\mathcal{X}\times \mathcal{X}\to \mathbb{R}$$ is simply a 
 Based on these items, the (squared) KSD is defined as 
 
 $$
-\mathrm{KSD}^2_p(q) = \mathbb{E}_{x\sim q}\mathbb{E}_{x'\sim q}[h_p(x,x')],
+\mathrm{KSD}^2_p(q) = \mathbb{E}_{x\sim q}\mathbb{E}_{x'\sim q}[h_p(x,x')],\tag{ksd}
 $$
 
 where $$h_p$$ is a function defined by
 
 $$
-\begin{align}
+\begin{equation}
+\begin{aligned}
 h_p(x,x') &= \mathbf{s}_p(x)^{\top} \mathbf{s}_p(x') k(x,x') + \mathbf{s}_p(x)^{\top} \Delta^*_{x'} k(x, x')\\
 &\quad +\mathbf{s}_p(x')^{\top} \Delta^*_x k(x, x')  + \mathrm{tr} \Delta_x^*\Delta_{x'}^*k(x,x').
-\end{align}
+\end{aligned}
+\tag{stein kernel}\label{skernel}
+\end{equation}
 $$
 
 Here, $$\Delta_x^*$$ is the inverse difference operator defined as for $$\Delta$$ that acts on  $$x$$ such that
@@ -194,22 +207,55 @@ $$
 Given a  $$\{x_i\}_{i=1}^n$$ from $$q$$, the KSD can be easily estimated with 
 
 $$
-\widehat{\mathrm{KSD}^2}_p(q) = {1\over B}\sum_{b=1}^B h(x_{i_b}, x_{j_b}),
+\widehat{\mathrm{KSD}^2}_p(q) = {1\over B}\sum_{b=1}^B h(x_{i_b}, x_{j_b}), \tag{ksdest}\label{ksdest}
 $$
 
 where the indices $$1\leq i_b < j_b \leq n$$ are sampled uniformly from all possible pairs, and $$1 \leq B \leq n(n-1)/2$$ is a batch-size.
 
 ### Training specifics -- differentiability
 
-You might have wondered if the training objective $$\widehat{\mathrm{KSD}^2}_p(q)$$ is differentiable or not.
-First of all, the forward/backward difference operations can be performed with matrix multiplications as shift operations are permutations (in one-hot encoding).
-
-The discrete nature of samples $$\{x_i\}_{i=1}^n$$ from $$q$$ does not allow us to do gradient-based learning.
+You might have wondered if the training objective $$\widehat{\mathrm{KSD}^2}_p(q)$$ in (\ref{ksdest}) is differentiable or not.
+First of all, the forward/backward difference operations in (\ref{skernel}) can be performed with matrix multiplications as shift operations are permutations (in one-hot encoding).
+Second, the discrete nature of samples $$\{x_i\}_{i=1}^n$$ from $$q$$ does not allow us to do gradient-based learning.
 Fortunately, by continuous relaxation, we can circumvent this issue -- there is a well-known trick called Gumbel softmax trick ([Jang et al., 2016][Jang2016], [Maddison et al., 2016][Maddison2016]).
-Specifically, to sample $$(x^1,\dots, x^D,) \sim q^1\otimes \dots \otimes q^D$$, we only need to sample $$D$$ independent samples $$(u^d)_{d=1}^D$$ from the Gumbel distribution $$\sim G(0, 1)$$, and for each $$d$$, take $$\mathrm{softmax}\Bigl([q^d + u^d]/\tau\Bigr)$$ with a temperature parameter $$\tau>0$$.
+Specifically, to sample a continuously relaxed version of $$(x^1,\dots, x^D,) \sim q^1\otimes \dots \otimes q^D$$, we only need to sample $$D$$ independent samples $$(u^d)_{d=1}^D$$ from the Gumbel distribution $$G(0, 1)$$, and for each $$d$$, take $$\mathrm{softmax}\Bigl([q^d + u^d]/\tau\Bigr)$$ with a temperature parameter $$\tau>0$$.
 Note that because of this sampling method, the normalisation of $$f_{\theta}(z)$$ is not necessary.
 For details, see the papers [Jang et al., 2016][Jang2016], [Maddison et al., 2016][Maddison2016].
+Therefore, the model $$q$$ defined by the distribution $$Q_{\theta}$$ can be learned using back propagation and implemented straightforwardly in e.g., PyTorch.
+
+### So, is it good...?
+
+Unfortunately, I cannot give you a definite answer in this post.
+I compared the mixture model (\ref{mixture}) with the product of categoricals in (\ref{product}) on an energy-based model
+
+$$
+p(x) \propto \exp(\mathrm{NN}(x))
+$$
+
+for some neural network $$\mathrm{NN}$$ that does not necessarily have a sparse (or low-rank) structure.
+For this task, I observed that (somewhat obviously) the mixture model has a better performance in terms of KSD
+than the product one (see the plot below).
+
+![plot of test loss against iteration steps](/images/2021-02-27/testloss.png){: .align-center}
+
+Evaluating the goodness of an approximation is a somewhat delicate issue.
+For example, a low KSD value might not be aligned to the quality of generated images if $$p$$ represents a distribution on images; we might want $$q$$ to capture (some order of ) moments of $$p$$, and
+it would be desirable that KSD could indicate if $$q$$ is a good approximation.
+
+
+## End remarks
+
+The idea of learning a posterior approximation with KSD has been explored by [Fisher et al., 2020][Fisher2020], where 
+the approximating distribution is defined by measure transport.
+In the discrete case, defining a push-forward of some continuous distribution to a discrete distribution is not so trivial, and therefore we considered a mixture model where the density (pmf) is explicitly given.
+The idea in this post has been mentioned in [Ranganath et al., 2016][Ranganath2016] (we gave a concrete implementation).
+
+Variational inference with a mixture model like in (\ref{mixture}) is known as semi-implicit variational inference (see, e.g., [YinZhou2018]). I am sure that there have been significant developments in this area.
+A relative benefit of using KSD is that you do not need to derive a lower bound on KL.
 
 [Yang2018]: http://proceedings.mlr.press/v80/yang18c.html
-[Jang2016]: https://arxiv.org/pdf/1611.01144.pdf 
+[Jang2016]: https://arxiv.org/abs/1611.01144 
 [Maddison2016]: https://arxiv.org/abs/1611.00712 
+[Fisher2020]: https://arxiv.org/abs/2010.11779
+[Ranganath2016]: https://arxiv.org/abs/1610.09033]
+[YinZhou2018]: [http://proceedings.mlr.press/v80/yin18b/yin18b.pdf
