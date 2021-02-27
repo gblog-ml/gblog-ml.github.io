@@ -30,11 +30,14 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://gblog-ml.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 # twitter_username: jekyllrb
 # github_username:  jekyll
-skin: "/assets/css/skins/dark.css"
+skin: "/assets/css/skins/light.css"
 # Mathjax settings
 mathjax: true
 # Build settings
 markdown: kramdown
+# Comments
+disqus:
+  shortname: gblog-ml
 # Exclude from processing.
 # The following items will not be processed, by default.
 # Any item listed under the `exclude:` key here will be automatically added to
