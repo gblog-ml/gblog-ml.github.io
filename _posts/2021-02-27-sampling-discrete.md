@@ -104,7 +104,12 @@ $$
 
 where $$Q$$ is a joint distribution of probability vectors $$q^{(1)},\dots, q^{(D)}$$ (so the above expression 
 is simply averaging with respect to the distribution $$Q$$).
-A CP-decomposition corresponds to setting the mixing distribution $$Q$$ to a mixture of Dirac deltas
+Sampling from $$q_{\mathrm{mix}}$$ is straightforward by ancestral sampling, which is performed as follows
+
+1. Sample $$(q^{(1)},\dots, q^{(D)}) \sim Q.$$
+2. Sample $$(x^1,\dots,x^D) \sim q^{(1)}\otimes \dots \otimes q^{(D)}.$$
+
+Note that a CP-decomposition corresponds to setting the mixing distribution $$Q$$ to a mixture of Dirac deltas
 
 $$
 Q_{\mathrm{CP}} = \sum_{r=1}^R \lambda_r \delta_{q_r^{(1)} \otimes \cdots \otimes q_r^{(D)}},
@@ -120,10 +125,8 @@ $$
 where $$c$$ is a probability tensor (of size typically smaller than $$p$$).
 While the infinite mixture looks like an overkill, we will make use of this flexible form to learn approximations rather than turn to low-rank tensor decompositions.
 
-Lastly, note that sampling from $$q_{\mathrm{mix}}$$ is straightforward by ancestral sampling, which is performed as follows
-
-1. Sample $$(q^{(1)},\dots, q^{(D)}) \sim Q.$$
-2. Sample $$(x^1,\dots,x^D) \sim q^{(1)}\otimes \dots \otimes q^{(D)}.$$
+Another family of flexible distributions is auto-regressive models (like huge transformer models).
+Although it can be used in our following discussion, we will focus on the above mixture model for simplicity.
 
 ## Learning approximate distributions
 
