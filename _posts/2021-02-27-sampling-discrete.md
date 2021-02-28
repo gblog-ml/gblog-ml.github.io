@@ -207,7 +207,8 @@ $$
 \end{align}
 $$
 
-Given a  $$\{x_i\}_{i=1}^n$$ from $$q$$, the KSD can be easily estimated with 
+The KSD is a valid discrepancy measure: $$\mathrm{KSD}_p(q)=0$$ if and only if $$p=q$$.
+Given sample points $$\{x_i\}_{i=1}^n$$ from $$q$$, the KSD can be easily estimated with 
 
 $$
 \widehat{\mathrm{KSD}^2}_p(q) = {1\over B}\sum_{b=1}^B h(x_{i_b}, x_{j_b}), \tag{ksdest}\label{ksdest}
